@@ -1,0 +1,29 @@
+# Compile la solution et lance les tests à chaque push et à chaque Pull Request.
+name: Build et tests .NET
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installer .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restaurer les paquets NuGet
+        run: dotnet restore
+
+      - name: Compiler
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Lancer les tests
+        run: dotnet test --no-build --configuration Release --verbosity normal
